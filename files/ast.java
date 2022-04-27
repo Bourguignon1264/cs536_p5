@@ -349,6 +349,10 @@ class ExpListNode extends ASTnode {
         }
     }
 
+    public int expListSize(){
+        return myExps.size();
+    }
+
     // list of kids (ExpNodes)
     private List<ExpNode> myExps;
 }
@@ -1762,7 +1766,7 @@ class CallExpNode extends ExpNode {
         }
 
         FnSym func = (FnSym)myId.sym();
-        if(func.getNumParams() != myExpList.size()) {
+        if(func.getNumParams() != myExpList.expListSize()) {
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Function call with wrong number of args");
             return func.getReturnType();
         }
@@ -1781,11 +1785,6 @@ class CallExpNode extends ExpNode {
             myExpList.unparse(p, 0);
         }
         p.print(")");
-    }
-
-    public Type typeCheck() {
-        // TODO
-        return null;
     }
 
     public int lineNum() {
