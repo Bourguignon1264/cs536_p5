@@ -538,6 +538,8 @@ class FnDeclNode extends DeclNode {
 
     public void typeCheck(){
         //TODO
+        myBody.typeCheck(((FnSym)myId.sym()).getReturnType());
+
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -786,6 +788,7 @@ class StructNode extends TypeNode {
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
 
+    public abstract void typeCheck(Type returnType);
 }
 
 class AssignStmtNode extends StmtNode {
@@ -1167,6 +1170,7 @@ class WhileStmtNode extends StmtNode {
     }
 
     public void typeCheck(Type returnType) {
+        //TODO
         Type whileCondition = myExp.typeCheck();
         if(!whileCondition.isBoolType()){
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
