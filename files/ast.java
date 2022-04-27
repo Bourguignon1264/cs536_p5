@@ -1759,21 +1759,23 @@ class CallExpNode extends ExpNode {
     }
 
     public Type typeCheck(){
-        Type idType = myId.typeCheck();
-        if(!idType.isFnType()) {
-            ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Attempt to call a non-function");
-            return new ErrorType();
-        }
+        //TODO
+        Type typeId = myId.typeCheck();
 
-        FnSym func = (FnSym)myId.sym();
-        if(func.getNumParams() != myExpList.expListSize()) {
+        FnSym function = (FnSym)myId.sym();
+        if(function.getNumParams() != myExpList.expListSize()) {
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Function call with wrong number of args");
-            return func.getReturnType();
+            return function.getReturnType();
         }
         else {
             myExpList.typeCheck(myId);
         }
-        return func.getReturnType();
+
+        if(!typeId.isFnType()) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Attempt to call a non-function");
+            return new ErrorType();
+        }
+        return function.getReturnType();
     }
 
 
