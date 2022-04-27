@@ -785,6 +785,7 @@ class StructNode extends TypeNode {
 
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
+
 }
 
 class AssignStmtNode extends StmtNode {
@@ -897,6 +898,34 @@ class ReadStmtNode extends StmtNode {
         p.println(";");
     }
 
+    public void typeCheck(Type returnType){
+        Type rhs = myExp.typeCheck();
+        //TODO
+        if(rhs.isErrorType()) {
+            return;
+        }
+        if(rhs.isStructType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct variable");
+            return;
+        }
+        if(rhs.isStructDefType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct name");
+            return;
+        }
+        if(rhs.isFnType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a function");
+            return;
+        }
+
+
+    }
+
     // one kid (actually can only be an IdNode or an ArrayExpNode)
     private ExpNode myExp;
 }
@@ -912,6 +941,34 @@ class WriteStmtNode extends StmtNode {
      ***/
     public void nameAnalysis(SymTable symTab) {
         myExp.nameAnalysis(symTab);
+    }
+
+    public void typeCheck(Type returnType){
+        Type rhs = myExp.typeCheck();
+        //TODO
+        if(rhs.isErrorType()) {
+            return;
+        }
+        if(rhs.isStructType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct variable");
+            return;
+        }
+        if(rhs.isStructDefType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct name");
+            return;
+        }
+        if(rhs.isFnType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a function");
+            return;
+        }
+
+
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -952,6 +1009,19 @@ class IfStmtNode extends StmtNode {
                     " in IfStmtNode.nameAnalysis");
             System.exit(-1);
         }
+    }
+
+    public void typeCheck(Type returnType) {
+        //TODO
+        Type ifCondition = myExp.typeCheck();
+        if(!ifCondition.isBoolType()) {
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Non-bool expression used as an if condition");
+        }
+        if(ifCondition.isErrorType()) {
+            return;
+        }
+        myStmtList.typeCheck(returnType);
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -1017,6 +1087,20 @@ class IfElseStmtNode extends StmtNode {
         }
     }
 
+    public void typeCheck(Type returnType) {
+        //TODO
+        Type ifCondition = myExp.typeCheck();
+        if(!ifCondition.isBoolType()) {
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Non-bool expression used as an if condition");
+        }
+        if(ifCondition.isErrorType()) {
+            return;
+        }
+        myThenStmtList.typeCheck(returnType);
+        myElseStmtList.typeCheck(returnType);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         p.print("if (");
@@ -1080,6 +1164,18 @@ class WhileStmtNode extends StmtNode {
         myStmtList.unparse(p, indent+4);
         doIndent(p, indent);
         p.println("}");
+    }
+
+    public void typeCheck(Type returnType) {
+        Type whileCondition = myExp.typeCheck();
+        if(!whileCondition.isBoolType()){
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Non-bool expression used as a while condition");
+        }
+        if(whileCondition.isErrorType()) {
+            return;
+        }
+        myStmtList.typeCheck(returnType);
     }
 
     // three kids
