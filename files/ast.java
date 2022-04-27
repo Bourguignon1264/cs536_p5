@@ -135,6 +135,10 @@ class ProgramNode extends ASTnode {
         myDeclList.nameAnalysis(symTab);
     }
 
+    public void typeCheck(){
+        myDeclList.typeCheck();
+    }
+
     public void unparse(PrintWriter p, int indent) {
         myDeclList.unparse(p, indent);
     }
@@ -156,10 +160,18 @@ class DeclListNode extends ASTnode {
         nameAnalysis(symTab, symTab);
     }
 
+    public void typeCheck(){
+        for(int i  = 0; i < myDecls.size(); i++){
+            if(myDecls.get(i) instanceof FnDeclNode){
+                ((FnDeclNode) myDecls.get(i)).typeCheck();
+            }
+        }
+    }
+
     /***
      * nameAnalysis
      * Given a symbol table symTab and a global symbol table globalTab
-     * (for processing struct names in variable decls), process all of the 
+     * (for processing struct names in variable decls), process all of the
      * decls in the list.
      ***/
     public void nameAnalysis(SymTable symTab, SymTable globalTab) {
@@ -250,6 +262,10 @@ class FnBodyNode extends ASTnode {
         myStmtList.nameAnalysis(symTab);
     }
 
+    public void typeCheck(Type returnType){
+        myStmtList.typeCheck(returnType);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         myDeclList.unparse(p, indent);
         myStmtList.unparse(p, indent);
@@ -272,6 +288,12 @@ class StmtListNode extends ASTnode {
     public void nameAnalysis(SymTable symTab) {
         for (StmtNode node : myStmts) {
             node.nameAnalysis(symTab);
+        }
+    }
+
+    public void typeCheck(Type returnType){
+        for(int i = 0; i< myStmts.size(); i++){
+            myStmts.get(i).typeCheck(returnType);
         }
     }
 
@@ -300,7 +322,7 @@ class ExpListNode extends ASTnode {
             node.nameAnalysis(symTab);
         }
     }
-//TODO
+    //TODO
     public void typeCheck(IdNode id) {
         FnSym function = (FnSym) id.sym();
         List<Type> paramsList = function.getParamTypes();
@@ -316,7 +338,7 @@ class ExpListNode extends ASTnode {
         }
     }
 
-        public void unparse(PrintWriter p, int indent) {
+    public void unparse(PrintWriter p, int indent) {
         Iterator<ExpNode> it = myExps.iterator();
         if (it.hasNext()) { // if there is at least one element
             it.next().unparse(p, indent);
@@ -353,12 +375,12 @@ class VarDeclNode extends DeclNode {
      * nameAnalysis (overloaded)
      * Given a symbol table symTab, do:
      * if this name is declared void, then error
-     * else if the declaration is of a struct type, 
+     * else if the declaration is of a struct type,
      *     lookup type name (globally)
      *     if type name doesn't exist, then error
      * if no errors so far,
      *     if name has already been declared in this scope, then error
-     *     else add name to local symbol table     
+     *     else add name to local symbol table
      *
      * symTab is local symbol table (say, for struct field decls)
      * globalTab is global symbol table (for struct type names)
@@ -527,6 +549,12 @@ class FnDeclNode extends DeclNode {
         }
 
         return null;
+    }
+
+    public void typeCheck(){
+        //TODO
+        myBody.typeCheck(((FnSym)myId.sym()).getReturnType());
+
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -774,6 +802,8 @@ class StructNode extends TypeNode {
 
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
+
+    public abstract void typeCheck(Type returnType);
 }
 
 class AssignStmtNode extends StmtNode {
@@ -789,14 +819,14 @@ class AssignStmtNode extends StmtNode {
         myAssign.nameAnalysis(symTab);
     }
 
+    public void typeCheck(Type returnType){
+        myAssign.typeCheck();
+    }
+
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         myAssign.unparse(p, -1); // no parentheses
         p.println(";");
-    }
-
-    public void typeCheck(Type returnType) {
-        myAssign.typeCheck();
     }
 
     // one kid
@@ -814,6 +844,14 @@ class PostIncStmtNode extends StmtNode {
      ***/
     public void nameAnalysis(SymTable symTab) {
         myExp.nameAnalysis(symTab);
+    }
+
+    public void typeCheck(Type returnType){
+        //TODO
+        if(myExp.typeCheck().isIntType()){
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Arithmetic operator applied to non-numeric operand");
+        }
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -837,6 +875,15 @@ class PostDecStmtNode extends StmtNode {
      ***/
     public void nameAnalysis(SymTable symTab) {
         myExp.nameAnalysis(symTab);
+    }
+
+    //TODO
+    public void typeCheck(Type returnType) {
+        if(!myExp.typeCheck().isIntType()){
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Arithmetic operator applied to non-numeric operand");
+        }
+        return;
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -869,6 +916,34 @@ class ReadStmtNode extends StmtNode {
         p.println(";");
     }
 
+    public void typeCheck(Type returnType){
+        Type rhs = myExp.typeCheck();
+        //TODO
+        if(rhs.isErrorType()) {
+            return;
+        }
+        if(rhs.isStructType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct variable");
+            return;
+        }
+        if(rhs.isStructDefType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct name");
+            return;
+        }
+        if(rhs.isFnType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a function");
+            return;
+        }
+
+
+    }
+
     // one kid (actually can only be an IdNode or an ArrayExpNode)
     private ExpNode myExp;
 }
@@ -884,6 +959,34 @@ class WriteStmtNode extends StmtNode {
      ***/
     public void nameAnalysis(SymTable symTab) {
         myExp.nameAnalysis(symTab);
+    }
+
+    public void typeCheck(Type returnType){
+        Type rhs = myExp.typeCheck();
+        //TODO
+        if(rhs.isErrorType()) {
+            return;
+        }
+        if(rhs.isStructType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct variable");
+            return;
+        }
+        if(rhs.isStructDefType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a struct name");
+            return;
+        }
+        if(rhs.isFnType()){
+            IdNode funcNode = (IdNode) myExp;
+            ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
+                    "Attempt to read a function");
+            return;
+        }
+
+
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -924,6 +1027,19 @@ class IfStmtNode extends StmtNode {
                     " in IfStmtNode.nameAnalysis");
             System.exit(-1);
         }
+    }
+
+    public void typeCheck(Type returnType) {
+        //TODO
+        Type ifCondition = myExp.typeCheck();
+        if(!ifCondition.isBoolType()) {
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Non-bool expression used as an if condition");
+        }
+        if(ifCondition.isErrorType()) {
+            return;
+        }
+        myStmtList.typeCheck(returnType);
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -987,6 +1103,20 @@ class IfElseStmtNode extends StmtNode {
                     " in IfStmtNode.nameAnalysis");
             System.exit(-1);
         }
+    }
+
+    public void typeCheck(Type returnType) {
+        //TODO
+        Type ifCondition = myExp.typeCheck();
+        if(!ifCondition.isBoolType()) {
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Non-bool expression used as an if condition");
+        }
+        if(ifCondition.isErrorType()) {
+            return;
+        }
+        myThenStmtList.typeCheck(returnType);
+        myElseStmtList.typeCheck(returnType);
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -1054,6 +1184,19 @@ class WhileStmtNode extends StmtNode {
         p.println("}");
     }
 
+    public void typeCheck(Type returnType) {
+        //TODO
+        Type whileCondition = myExp.typeCheck();
+        if(!whileCondition.isBoolType()){
+            ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                    "Non-bool expression used as a while condition");
+        }
+        if(whileCondition.isErrorType()) {
+            return;
+        }
+        myStmtList.typeCheck(returnType);
+    }
+
     // three kids
     private ExpNode myExp;
     private DeclListNode myDeclList;
@@ -1073,6 +1216,10 @@ class CallStmtNode extends StmtNode {
         myCall.nameAnalysis(symTab);
     }
 
+    public void  typeCheck(Type returnType){
+        myCall.typeCheck();
+    }
+
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         myCall.unparse(p, indent);
@@ -1085,10 +1232,7 @@ class CallStmtNode extends StmtNode {
 
 
 
-
-// **********************************************************************
-// Kevin & Bobby split here
-// **********************************************************************
+///Kevin Bobby Split
 
 
 
