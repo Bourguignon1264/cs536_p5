@@ -1,3 +1,8 @@
+// TODO: check for "-1"
+// TODO: check for all error types
+// TODO: check error report positions
+// TODO: reformat
+
 import java.io.*;
 import java.util.*;
 
@@ -6,7 +11,7 @@ import java.util.*;
 // represents a minim program.
 //
 // Internal nodes of the tree contain pointers to children, organized
-// either in a list (for nodes that may have a variable number of 
+// either in a list (for nodes that may have a variable number of
 // children) or as a fixed set of fields.
 //
 // The nodes for literals and ids contain line and character number
@@ -64,7 +69,7 @@ import java.util.*;
 //         UnaryMinusNode
 //         NotNode
 //       BinaryExpNode       ExpNode ExpNode
-//         PlusNode     
+//         PlusNode
 //         MinusNode
 //         TimesNode
 //         DivideNode
@@ -91,7 +96,7 @@ import java.util.*;
 // (3) Internal nodes with fixed numbers of kids:
 //        ProgramNode,     VarDeclNode,     FnDeclNode,     FormalDeclNode,
 //        StructDeclNode,  FnBodyNode,      StructNode,     AssignStmtNode,
-//        PostIncStmtNode, PostDecStmtNode, ReadStmtNode,   WriteStmtNode   
+//        PostIncStmtNode, PostDecStmtNode, ReadStmtNode,   WriteStmtNode
 //        IfStmtNode,      IfElseStmtNode,  WhileStmtNode,  CallStmtNode
 //        ReturnStmtNode,  DotAccessNode,   AssignExpNode,  CallExpNode,
 //        UnaryExpNode,    BinaryExpNode,   UnaryMinusNode, NotNode,
@@ -1233,15 +1238,6 @@ class CallStmtNode extends StmtNode {
     // one kid
     private CallExpNode myCall;
 }
-
-
-
-///Kevin Bobby Split
-
-
-
-
-
 
 class ReturnStmtNode extends StmtNode {
     public ReturnStmtNode(ExpNode exp) {
