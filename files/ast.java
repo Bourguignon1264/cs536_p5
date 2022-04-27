@@ -300,8 +300,23 @@ class ExpListNode extends ASTnode {
             node.nameAnalysis(symTab);
         }
     }
+//TODO
+    public void typeCheck(IdNode id) {
+        FnSym function = (FnSym) id.sym();
+        List<Type> paramsList = function.getParamTypes();
+        for (int i = 0; i < myExps.size(); i++) {
+            Type f = paramsList.get(i);
+            Type a = myExps.get(i).typeCheck();
+            if (!(a.equals(f))) {
+                ErrMsg.fatal(myExps.get(i).lineNum(), myExps.get(i).charNum(), "Type of actual does not match type of formal");
+            }
+            if (a.isErrorType())
+                continue;
 
-    public void unparse(PrintWriter p, int indent) {
+        }
+    }
+
+        public void unparse(PrintWriter p, int indent) {
         Iterator<ExpNode> it = myExps.iterator();
         if (it.hasNext()) { // if there is at least one element
             it.next().unparse(p, indent);
@@ -1594,6 +1609,26 @@ class CallExpNode extends ExpNode {
         myId.nameAnalysis(symTab);
         myExpList.nameAnalysis(symTab);
     }
+
+    public Type typeCheck(){
+        Type idType = myId.typeCheck();
+        if(!idType.isFnType()) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Attempt to call a non-function");
+            return new ErrorType();
+        }
+
+        FnSym func = (FnSym)myId.sym();
+        if(func.getNumParams() != myExpList.size()) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Function call with wrong number of args");
+            return func.getReturnType();
+        }
+        else {
+            myExpList.typeCheck(myId);
+        }
+        return func.getReturnType();
+    }
+
+
 
     public void unparse(PrintWriter p, int indent) {
         myId.unparse(p, 0);
