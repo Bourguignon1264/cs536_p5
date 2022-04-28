@@ -1850,28 +1850,28 @@ abstract class BinaryExpNode extends ExpNode {
     public Type arithmeticTypeCheckHelper() {
         Type exp1Type = myExp1.typeCheck();
         Type exp2Type = myExp2.typeCheck();
-    
+
         if (exp1Type.isErrorType()) {
             return new ErrorType();
         }
-    
+
         if (exp2Type.isErrorType()) {
             return new ErrorType();
         }
-    
+
         // error if applying an arithmetic operator to an operand with type other than int
         if (!(exp1Type.isIntType() && exp1Type.isErrorType())) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
                     "Arithmetic operator with non-numeric operand");
             return new ErrorType();
         }
-    
+
         if (!(exp2Type.isIntType() && exp2Type.isErrorType())) {
             ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(),
                     "Arithmetic operator with non-numeric operand");
             return new ErrorType();
         }
-    
+
         return new IntType();
     }
 
@@ -2060,7 +2060,7 @@ class PlusNode extends BinaryExpNode {
 
     public Type typeCheck() {
         return arithmeticTypeCheckHelper();
-    } 
+    }
 }
 
 class MinusNode extends BinaryExpNode {
