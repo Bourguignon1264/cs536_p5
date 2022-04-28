@@ -333,14 +333,13 @@ class ExpListNode extends ASTnode {
         FnSym function = (FnSym) id.sym();
         List<Type> paramsList = function.getParamTypes();
         for (int i = 0; i < myExps.size(); i++) {
-            Type f = paramsList.get(i);
-            Type a = myExps.get(i).typeCheck();
-            if (!(a.equals(f))) {
-                ErrMsg.fatal(myExps.get(i).lineNum(), myExps.get(i).charNum(), "Type of actual does not match type of formal");
+            Type list = paramsList.get(i);
+            Type actual = myExps.get(i).typeCheck();
+            if (!(actual.equals(list))) {
+                ErrMsg.fatal(myExps.get(i).lineNum(), myExps.get(i).charNum(), "Actual type and formal type do not match");
             }
-            if (a.isErrorType())
+            if (actual.isErrorType())
                 continue;
-
         }
     }
 
@@ -858,9 +857,9 @@ class PostIncStmtNode extends StmtNode {
 
     public void typeCheck(Type returnType){
         //TODO
-        if(myExp.typeCheck().isIntType()){
+        if(!myExp.typeCheck().isIntType()){
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
-                    "Arithmetic operator applied to non-numeric operand");
+                    "Arithmetic operator with non-numeric operand");
         }
     }
 
@@ -891,7 +890,7 @@ class PostDecStmtNode extends StmtNode {
     public void typeCheck(Type returnType) {
         if(!myExp.typeCheck().isIntType()){
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
-                    "Arithmetic operator applied to non-numeric operand");
+                    "Arithmetic operator with non-numeric operand");
         }
         return;
     }
@@ -935,19 +934,19 @@ class ReadStmtNode extends StmtNode {
         if(rhs.isStructType()){
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
-                    "Attempt to read a struct variable");
+                    "Read attempt of struct variable");
             return;
         }
         if(rhs.isStructDefType()){
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
-                    "Attempt to read a struct name");
+                    "Read attempt of struct name");
             return;
         }
         if(rhs.isFnType()){
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
-                    "Attempt to read a function");
+                    "Read attempt of function");
             return;
         }
 
@@ -980,23 +979,21 @@ class WriteStmtNode extends StmtNode {
         if(rhs.isStructType()){
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
-                    "Attempt to read a struct variable");
+                    "Write attempt of struct variable");
             return;
         }
         if(rhs.isStructDefType()){
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
-                    "Attempt to read a struct name");
+                    "Write attempt of struct name");
             return;
         }
         if(rhs.isFnType()){
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
-                    "Attempt to read a function");
+                    "Write attempt of function");
             return;
         }
-
-
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -1044,7 +1041,7 @@ class IfStmtNode extends StmtNode {
         Type ifCondition = myExp.typeCheck();
         if(!ifCondition.isBoolType()) {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
-                    "Non-bool expression used as an if condition");
+                    "Non-bool expression in condition of if");
         }
         if(ifCondition.isErrorType()) {
             return;
@@ -1120,7 +1117,7 @@ class IfElseStmtNode extends StmtNode {
         Type ifCondition = myExp.typeCheck();
         if(!ifCondition.isBoolType()) {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
-                    "Non-bool expression used as an if condition");
+                    "Non-bool expression in condition of if");
         }
         if(ifCondition.isErrorType()) {
             return;
@@ -1199,7 +1196,7 @@ class WhileStmtNode extends StmtNode {
         Type whileCondition = myExp.typeCheck();
         if(!whileCondition.isBoolType()){
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
-                    "Non-bool expression used as a while condition");
+                    "Non-bool expression in condition of while");
         }
         if(whileCondition.isErrorType()) {
             return;
