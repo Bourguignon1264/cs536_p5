@@ -57,6 +57,11 @@ public class P5 {
 		
 		if (!ErrMsg.getErr()) {  // if no errors, unparse
 			((ASTnode)root.value).unparse(outFile, 0);
+            // TODO: check if correct
+            // call typecheck
+            ((ProgramNode)root.value).typeCheck();
+
+
 		}
         outFile.close();
 
