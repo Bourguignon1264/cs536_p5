@@ -60,8 +60,6 @@ public class P5 {
             // TODO: check if correct
             // call typecheck
             ((ProgramNode)root.value).typeCheck();
-
-
 		}
         outFile.close();
 
