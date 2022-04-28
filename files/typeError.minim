@@ -1,0 +1,299 @@
+int f1() {
+    return 1;
+}
+
+struct S1 {
+    int x;
+}
+
+struct S1 s1;
+
+struct S2 {
+    int y;
+}
+
+struct S2 s2;
+
+void f2(param) {
+    return;
+}
+
+int f3(int i) {
+    return i;
+}
+
+bool f4(bool b, int i) {
+    return true;
+}
+
+int iVar;
+
+bool bVar;
+
+void f12 () {
+    return;
+}
+
+
+
+// TEST WRITE
+void testWrite() {
+    // Write attempt of function
+    disp << f1;
+
+    // Write attempt of struct name
+    disp << S1;
+
+    // Write attempt of struct variable
+    disp << s1;
+
+    // Write attempt of void
+    disp << f2(2);
+}
+
+
+// TEST READ
+void testRead() {
+    // Read attempt of function
+    input >> f1;
+
+    // Read attempt of struct name
+    input >> S1;
+
+    // Read attempt of struct variable
+    input >> s1
+}
+
+
+// TEST CALL
+void testCall() {
+    // Call attempt on non-function
+    // Note: should not type-check the actual parameters
+    x();
+    y(1);
+
+    // Function call with wrong # of args
+    // Note: should not type-check the actual parameters
+    f3();
+    f3(2, 3, 4);
+
+    // Actual type and formal type do not match
+    // Note: should only check for this error if # of
+    // args is correct. If there are several args with
+    // the wrong type, you must give an error message
+    // for each such argument
+    f3(true);
+    f3(false, true);
+    f4(5, false);
+    f4();
+}
+
+
+// TEST RETURN
+// return value missing
+int f5() {
+    return;
+}
+bool f6() {
+    return;
+}
+
+// Return with value in void function
+void f7() {
+    return 1;
+}
+void f8() {
+    return true;
+}
+void f9() {
+    return a;
+}
+
+// 	Bad return value
+int f10() {
+    return false;
+}
+bool f11() {
+    return 1;
+}
+
+
+// TEST APPLYING
+// Arithmetic operator with non-numeric operand
+void testApplyingArithmetic() {
+    iVar = bVar + iVar;
+    iVar = f1 + iVar;
+    iVar = S1 + iVar;
+    iVar = s1 + iVar;
+
+    iVar = bVar - iVar;
+    iVar = f1 - iVar;
+    iVar = S1 - iVar;
+    iVar = s1 - iVar;
+
+    iVar = bVar * iVar;
+    iVar = f1 * iVar;
+    iVar = S1 * iVar;
+    iVar = s1 * iVar;
+
+    iVar = bVar / iVar;
+    iVar = f1 / iVar;
+    iVar = S1 / iVar;
+    iVar = s1 / iVar;
+
+    bVar++;
+    f1++;
+    S1++;
+    s1++;
+
+    bVar--;
+    f1--;
+    S1--;
+    s1--;
+}
+
+// Relational operator with non-numeric operand
+void testApplyingRelational() {
+    bVar = iVar < bVar;
+    bVar = f1 < bVar;
+    bVar = S1 < bVar;
+    bVar = s1 < bVar;
+    bVar = iVar < f1;
+    bVar = S1 < s1;
+
+    bVar = iVar > bVar;
+    bVar = f1 > bVar;
+    bVar = S1 > bVar;
+    bVar = s1 > bVar;
+    bVar = iVar > f1;
+    bVar = S1 > s1;
+
+    bVar = iVar <= bVar;
+    bVar = f1 <= bVar;
+    bVar = S1 <= bVar;
+    bVar = s1 <= bVar;
+    bVar = iVar <= f1;
+    bVar = S1 <= s1;
+
+    bVar = iVar >= bVar;
+    bVar = f1 >= bVar;
+    bVar = S1 >= bVar;
+    bVar = s1 >= bVar;
+    bVar = iVar >= f1;
+    bVar = S1 >= s1;
+}
+
+void testApplyingLogical() {
+    bVar = !iVar;
+    bVar = !f1;
+    bVar = !S1;
+    bVar = !s1;
+
+    bVar = iVar && bVar;
+    bVar = f1 && bVar;
+    bVar = S1 && bVar;
+    bVar = s1 && bVar;
+    bVar = iVar && f1;
+    bVar = S1 && s1;
+
+    bVar = iVar || bVar;
+    bVar = f1 || bVar;
+    bVar = S1 || bVar;
+    bVar = s1 || bVar;
+    bVar = iVar || f1;
+    bVar = S1 || s1;
+
+}
+
+void testEqualityComparison() {
+    // Applying an equality operator to operands of two different types
+    // Type mismatch
+    bVar = iVar == bVar;
+    bVar = iVar == f1;
+    bVar = iVar == S1;
+    bVar = iVar == s1;
+    bVar = bVar == iVar;
+
+    bVar = iVar != bVar;
+    bVar = iVar != f1;
+    bVar = iVar != S1;
+    bVar = iVar != s1;
+    bVar = bVar != iVar;
+
+    // assigning a value of one type to a variable of another type
+    // Type mismatch
+    iVar = bVar;
+    iVar = f1;
+    iVar = S1;
+    iVar = s1;
+    bVar = iVar;
+
+    // Applying an equality operator to void function operands
+    // Equality operator used with void functions
+    bVar = f12() == f2();
+    bVar = f2() != f12();
+
+    // Comparing two functions for equality
+    // Equality operator used with functions
+    bVar = f1 == f3;
+    bVar = f3 != f1;
+
+    // Comparing two struct names for equality
+    // Equality operator used with struct names
+    bVar = S1 == S2;
+    bVar = S2 != S1;
+
+    // Comparing two struct variables for equality
+    // Equality operator used with struct variables
+    bVar = s2 == s1;
+    bVar = s1 != s2;
+}
+
+void testAssignment() {
+    // Assigning a function to a function
+    // Function assignment
+    f1 = f3;
+    f1 = f2;
+    f2 = f12;
+
+    // Assigning a struct name to a struct name
+    // Struct name assignment
+    S2 = S1;
+
+    // Assigning a struct variable to a struct variable
+    // Struct variable assignment
+    s1 = s2;
+}
+
+// TEST NON-BOOL CONDITIONS
+// Non-bool expression in condition of if
+void testIfCondition() {
+    if (iVar) {
+        return;
+    }
+    if (f1) {
+        return;
+    }
+    if (S1) {
+        return;
+    }
+    if (s1) {
+       return; 
+    }
+}
+
+// Non-bool expression in condition of while
+void testWhileCondition() {
+    while (iVar) {
+        iVar++;
+    }
+    while (f1) {
+        iVar++;
+    }
+    while (S2) {
+        iVar++;
+    }
+    while (s2) {
+        iVar++;
+    }
+}
