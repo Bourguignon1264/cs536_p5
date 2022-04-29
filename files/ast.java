@@ -1889,13 +1889,13 @@ abstract class BinaryExpNode extends ExpNode {
         }
 
         // error if applying a logical operator to an operand with type other than bool
-        if (!(exp1Type.isBoolType() && exp1Type.isErrorType())) {
+        if (!(exp1Type.isBoolType()) && !(exp1Type.isErrorType())) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
                     "Logical operator with non-bool operand");
             return new ErrorType();
         }
 
-        if (!(exp2Type.isBoolType() && exp2Type.isErrorType())) {
+        if (!(exp2Type.isBoolType()) && !(exp2Type.isErrorType())) {
             ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(),
                     "Logical operator with non-bool operand");
             return new ErrorType();

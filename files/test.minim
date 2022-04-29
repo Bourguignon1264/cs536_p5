@@ -1,35 +1,35 @@
 int x;
 bool y;
-void writeAndReadTest(){
-    int a;
-    a = 1;
-    bool b;
-    b = true;
-    disp << "hello";
-    disp << a;
-    disp << b;
-    disp << !b;
-
-    input >> "hello";
-    input << a;
-    input << b;
-    input << !b;
-}
 
 struct structTest1{
     int a;
     int b;
     bool c;
     bool d;
-}
+};
 
-struct structTest1{
+struct structTest2{
     int a;
     bool b;
-    struct structTest2 test;
-}
+    struct structTest1 test;
+};
 
 struct structTest1 t;
+
+void writeAndReadTest(){
+    int a;
+	bool b;
+
+    a = 1;
+    b = true;
+    disp << "hello";
+    disp << a;
+    disp << b;
+    disp << !b;
+
+    input >> a;
+    input >> b;
+}
 
 bool boolTest1(){
     bool a;
@@ -57,10 +57,8 @@ void arithmeticTest(int a){
     b = a - a;
     b = a * a;
     b = a / a;
-    b = a++;
-    b = ++a;
-    b = a--;
-    b = --a;
+    a++;
+    a--;
 }
 
 void logicalAndRelationalTest(){
@@ -81,8 +79,10 @@ void logicalAndRelationalTest(){
 }
 
 void functionCallTest(){
-    int a = intTest2(1,2,3);
-    bool b = boolTest2(true);
+    int a;
+	bool b;
+    a = intTest2(1,2,3);
+    b = boolTest2(true);
     a = intTest2(t.a, t.a, t.b);
     b = boolTest2(t.c);
     a = intTest1();
