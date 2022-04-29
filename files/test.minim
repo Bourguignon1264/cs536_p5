@@ -1,0 +1,103 @@
+void writeAndReadTest(){
+    int a = 1;
+    bool b = true;
+    disp << "hello";
+    disp << a;
+    disp << b;
+    disp << !b;
+
+    input >> "hello";
+    input << a;
+    input << b;
+    input << !b;
+}
+
+struct structTest1{
+    int a;
+    int b;
+    bool c;
+    bool d;
+}
+
+struct structTest1{
+    int a;
+    bool b;
+    struct structTest2 test;
+}
+
+struct structTest1 t;
+
+bool boolTest1(){
+    bool a = true;
+    return a;
+}
+
+bool boolTest2(bool a){
+    return !a;
+}
+
+int intTest1(){
+    int a = 5;
+    return a;
+}
+
+int intTest2(int a, int b, int c){
+    return a+b+c;
+}
+
+void arithmeticTest(int a){
+    int b;
+    b = a + a;
+    b = a - a;
+    b = a * a;
+    b = a / a;
+    b = a++;
+    b = ++a;
+    b = a--;
+    b = --a;
+}
+
+void logicalAndRelationalTest(){
+    bool a;
+    int b;
+    a = b < b;
+    a = b > b;
+    a = b <= b;
+    a = b >= b;
+    a = b == b;
+    a = b != b;
+    a = t.c == t.d;
+    a = t.c != t.d;
+    a = !a;
+    a = a && a;
+    a = a || a;
+}
+
+void functionCallTest(){
+    int a = intTest2(1,2,3);
+    bool b = boolTest2(true);
+    a = intTest2(t.a, t.a, t.b);
+    b = boolTest2(t.c);
+    a = intTest1();
+    b = boolTest1();
+}
+
+void testIfElse(){
+    bool a;
+    if(a){
+        a = !a;
+    }else{
+        a = true;
+        a = false;
+    }
+}
+
+void testWhile(){
+ bool a;
+ int b;
+ while(a){
+    b++;
+    a = !a;
+ }
+}
+
