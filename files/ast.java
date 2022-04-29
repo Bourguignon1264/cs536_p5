@@ -1265,7 +1265,7 @@ class ReturnStmtNode extends StmtNode {
     }
 
     public void typeCheck(Type retType) {
-        Type expType = myExp.typeCheck();
+        Type expType;
 
         if (myExp != null) {
             expType = myExp.typeCheck();
@@ -1756,6 +1756,11 @@ class CallExpNode extends ExpNode {
     public Type typeCheck(){
         Type typeId = myId.typeCheck();
 
+        if (!typeId.isFnType()) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Call attempt on non-function");
+            return new ErrorType();
+        }
+
         FnSym function = (FnSym)myId.sym();
 
         if (function.getNumParams() != myExpList.expListSize()) {
@@ -1765,11 +1770,6 @@ class CallExpNode extends ExpNode {
 
         else {
             myExpList.typeCheck(myId);
-        }
-
-        if (!typeId.isFnType()) {
-            ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Call attempt on non-function");
-            return new ErrorType();
         }
 
         return function.getReturnType();
@@ -1861,13 +1861,13 @@ abstract class BinaryExpNode extends ExpNode {
         }
 
         // error if applying an arithmetic operator to an operand with type other than int
-        if (!(exp1Type.isIntType() && exp1Type.isErrorType())) {
+        if (!(exp1Type.isIntType()) && !(exp1Type.isErrorType())) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
                     "Arithmetic operator with non-numeric operand");
             return new ErrorType();
         }
 
-        if (!(exp2Type.isIntType() && exp2Type.isErrorType())) {
+        if (!(exp2Type.isIntType()) && !(exp2Type.isErrorType())) {
             ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(),
                     "Arithmetic operator with non-numeric operand");
             return new ErrorType();
@@ -1968,13 +1968,13 @@ abstract class BinaryExpNode extends ExpNode {
         }
 
         // error if applying a relational operator to an operand with type other than int
-        if (!(exp1Type.isIntType() && exp1Type.isErrorType())) {
+        if (!(exp1Type.isIntType()) && !(exp1Type.isErrorType())) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
                     "Relational operator with non-numeric operand");
             return new ErrorType();
         }
 
-        if (!(exp2Type.isIntType() && exp2Type.isErrorType())) {
+        if (!(exp2Type.isIntType()) && !(exp2Type.isErrorType())) {
             ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(),
                     "Relational operator with non-numeric operand");
             return new ErrorType();
@@ -2117,8 +2117,6 @@ class DivideNode extends BinaryExpNode {
         return arithmeticTypeCheckHelper();
     }
 }
-
-// hello
 
 class AndNode extends BinaryExpNode {
     public AndNode(ExpNode exp1, ExpNode exp2) {
