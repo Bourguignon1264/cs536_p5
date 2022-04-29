@@ -1,6 +1,10 @@
+int x;
+bool y;
 void writeAndReadTest(){
-    int a = 1;
-    bool b = true;
+    int a;
+    a = 1;
+    bool b;
+    b = true;
     disp << "hello";
     disp << a;
     disp << b;
@@ -28,7 +32,8 @@ struct structTest1{
 struct structTest1 t;
 
 bool boolTest1(){
-    bool a = true;
+    bool a;
+    a = true;
     return a;
 }
 
@@ -37,7 +42,8 @@ bool boolTest2(bool a){
 }
 
 int intTest1(){
-    int a = 5;
+    int a;
+    a = 5;
     return a;
 }
 
@@ -68,6 +74,7 @@ void logicalAndRelationalTest(){
     a = b != b;
     a = t.c == t.d;
     a = t.c != t.d;
+    a = b == b;
     a = !a;
     a = a && a;
     a = a || a;
