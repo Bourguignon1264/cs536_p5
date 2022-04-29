@@ -1861,13 +1861,13 @@ abstract class BinaryExpNode extends ExpNode {
         }
 
         // error if applying an arithmetic operator to an operand with type other than int
-        if (!(exp1Type.isIntType()) && !(exp1Type.isErrorType())) {
+        if (!(exp1Type.isIntType())) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
                     "Arithmetic operator with non-numeric operand");
             return new ErrorType();
         }
 
-        if (!(exp2Type.isIntType()) && !(exp2Type.isErrorType())) {
+        if (!(exp2Type.isIntType())) {
             ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(),
                     "Arithmetic operator with non-numeric operand");
             return new ErrorType();
@@ -1889,13 +1889,13 @@ abstract class BinaryExpNode extends ExpNode {
         }
 
         // error if applying a logical operator to an operand with type other than bool
-        if (!(exp1Type.isBoolType()) && !(exp1Type.isErrorType())) {
+        if (!(exp1Type.isBoolType())) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
                     "Logical operator with non-bool operand");
             return new ErrorType();
         }
 
-        if (!(exp2Type.isBoolType()) && !(exp2Type.isErrorType())) {
+        if (!(exp2Type.isBoolType())) {
             ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(),
                     "Logical operator with non-bool operand");
             return new ErrorType();
@@ -1968,13 +1968,13 @@ abstract class BinaryExpNode extends ExpNode {
         }
 
         // error if applying a relational operator to an operand with type other than int
-        if (!(exp1Type.isIntType()) && !(exp1Type.isErrorType())) {
+        if (!(exp1Type.isIntType())) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
                     "Relational operator with non-numeric operand");
             return new ErrorType();
         }
 
-        if (!(exp2Type.isIntType()) && !(exp2Type.isErrorType())) {
+        if (!(exp2Type.isIntType())) {
             ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(),
                     "Relational operator with non-numeric operand");
             return new ErrorType();

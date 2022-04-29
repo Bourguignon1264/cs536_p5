@@ -1,39 +1,29 @@
+int iVar;
+bool bVar;
+struct S1 {
+    int x;
+};
+struct S2 {
+    int y;
+};
+struct S1 s1;
+struct S2 s2;
+
 int f1() {
     return 1;
 }
-
-struct S1 {
-    int x;
-}
-
-struct S1 s1;
-
-struct S2 {
-    int y;
-}
-
-struct S2 s2;
-
-void f2(param) {
+void f2(int param) {
     return;
 }
-
 int f3(int i) {
     return i;
 }
-
 bool f4(bool b, int i) {
     return true;
 }
-
-int iVar;
-
-bool bVar;
-
 void f12 () {
     return;
 }
-
 
 
 % TEST WRITE
@@ -61,7 +51,7 @@ void testRead() {
     input >> S1;
 
     % Read attempt of struct variable
-    input >> s1
+    input >> s1;
 }
 
 
@@ -104,9 +94,6 @@ void f7() {
 }
 void f8() {
     return true;
-}
-void f9() {
-    return a;
 }
 
 % 	Bad return value
