@@ -977,19 +977,24 @@ class WriteStmtNode extends StmtNode {
         if(rhs.isErrorType()) {
             return;
         }
-        if(rhs.isStructType()){
+        if(rhs.isVoidType()) {
+            CallExpNode node = (CallExpNode) myExp;
+            ErrMsg.fatal(node.lineNum(), node.charNum(),
+                    "Write attempt of void");
+        }
+        if(rhs.isStructType()) {
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
                     "Write attempt of struct variable");
             return;
         }
-        if(rhs.isStructDefType()){
+        if(rhs.isStructDefType()) {
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
                     "Write attempt of struct name");
             return;
         }
-        if(rhs.isFnType()){
+        if(rhs.isFnType()) {
             IdNode funcNode = (IdNode) myExp;
             ErrMsg.fatal(funcNode.lineNum(), funcNode.charNum(),
                     "Write attempt of function");
@@ -1269,16 +1274,16 @@ class ReturnStmtNode extends StmtNode {
 
         if (myExp != null) {
             expType = myExp.typeCheck();
+            // error if returning a value from a void function
+            if (retType.isVoidType()) {
+                ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
+                        "Return with value in void function");
+                return;
+            }
             // error if returning a value of the wrong type from a non-void function
             if (!expType.equals(retType)) {
                 ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                         "Bad return value");
-                return;
-            }
-            // error if returning a value from a void function
-            else if (expType.isVoidType()) {
-                ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
-                        "Return with value in void function");
                 return;
             }
         }
@@ -1938,17 +1943,17 @@ abstract class BinaryExpNode extends ExpNode {
             return new ErrorType();
         }
 
-        // error if comparing two struct names for equality
+        // error if comparing two struct variables for equality
         if (exp1Type.isStructType()) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
-                    "Equality operator used with struct names");
+                    "Equality operator used with struct variables");
             return new ErrorType();
         }
 
-        // error if comparing two struct variables for equality
+        // error if comparing two struct names for equality
         if (exp1Type.isStructDefType()) {
             ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(),
-                    "Equality operator used with struct variables");
+                    "Equality operator used with struct names");
             return new ErrorType();
         }
 

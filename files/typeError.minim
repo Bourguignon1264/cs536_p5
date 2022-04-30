@@ -1,5 +1,7 @@
 int iVar;
 bool bVar;
+int x;
+int y;
 struct S1 {
     int x;
 };
@@ -73,9 +75,7 @@ void testCall() {
     % the wrong type, you must give an error message
     % for each such argument
     f3(true);
-    f3(false, true);
     f4(5, false);
-    f4();
 }
 
 
