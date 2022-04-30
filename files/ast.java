@@ -1,10 +1,3 @@
-// TODO: check for "-1"
-// TODO: check for all error types
-// TODO: check error report positions
-// TODO: reformat
-// TODO: revise p5.java
-
-
 import java.io.*;
 import java.util.*;
 
@@ -329,7 +322,6 @@ class ExpListNode extends ASTnode {
             node.nameAnalysis(symTab);
         }
     }
-    //TODO
     public void typeCheck(IdNode id) {
         FnSym function = (FnSym) id.sym();
         List<Type> paramsList = function.getParamTypes();
@@ -337,7 +329,8 @@ class ExpListNode extends ASTnode {
             Type list = paramsList.get(i);
             Type actual = myExps.get(i).typeCheck();
             if (!(actual.equals(list))) {
-                ErrMsg.fatal(myExps.get(i).lineNum(), myExps.get(i).charNum(), "Actual type and formal type do not match");
+                ErrMsg.fatal(myExps.get(i).lineNum(), myExps.get(i).charNum(),
+                        "Actual type and formal type do not match");
             }
             if (actual.isErrorType())
                 continue;
@@ -562,7 +555,6 @@ class FnDeclNode extends DeclNode {
     }
 
     public void typeCheck(){
-        //TODO
         myBody.typeCheck(((FnSym)myId.sym()).getReturnType());
 
     }
@@ -857,7 +849,6 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void typeCheck(Type returnType){
-        //TODO
         if(!myExp.typeCheck().isIntType()){
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                     "Arithmetic operator with non-numeric operand");
@@ -887,7 +878,6 @@ class PostDecStmtNode extends StmtNode {
         myExp.nameAnalysis(symTab);
     }
 
-    //TODO
     public void typeCheck(Type returnType) {
         if(!myExp.typeCheck().isIntType()){
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
@@ -928,7 +918,6 @@ class ReadStmtNode extends StmtNode {
 
     public void typeCheck(Type returnType){
         Type rhs = myExp.typeCheck();
-        //TODO
         if(rhs.isErrorType()) {
             return;
         }
@@ -973,7 +962,6 @@ class WriteStmtNode extends StmtNode {
 
     public void typeCheck(Type returnType){
         Type rhs = myExp.typeCheck();
-        //TODO
         if(rhs.isErrorType()) {
             return;
         }
@@ -1043,7 +1031,6 @@ class IfStmtNode extends StmtNode {
     }
 
     public void typeCheck(Type returnType) {
-        //TODO
         Type ifCondition = myExp.typeCheck();
         if(!ifCondition.isBoolType()) {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
@@ -1119,7 +1106,6 @@ class IfElseStmtNode extends StmtNode {
     }
 
     public void typeCheck(Type returnType) {
-        //TODO
         Type ifCondition = myExp.typeCheck();
         if(!ifCondition.isBoolType()) {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
@@ -1198,7 +1184,6 @@ class WhileStmtNode extends StmtNode {
     }
 
     public void typeCheck(Type returnType) {
-        //TODO
         Type whileCondition = myExp.typeCheck();
         if(!whileCondition.isBoolType()){
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
@@ -1281,7 +1266,7 @@ class ReturnStmtNode extends StmtNode {
                 return;
             }
             // error if returning a value of the wrong type from a non-void function
-            if (!expType.equals(retType)) {
+            if (!retType.equals(expType)) {
                 ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                         "Bad return value");
                 return;
